@@ -1,6 +1,6 @@
 package com.sakda.chineselearning.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import com.sakda.chineselearning.dto.WordDTO;
 
@@ -8,7 +8,13 @@ public interface WordService {
 
     WordDTO create(WordDTO dto);
 
-    List<WordDTO> getAll();
+	Page<WordDTO> getAll(
+			String keyword, 
+			int page, 
+			int size,
+			String sortBy,
+			String sortDir
+			);
 
     WordDTO getById(Long id);
 

@@ -1,7 +1,8 @@
 package com.sakda.chineselearning.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.dto.WordDTO;
@@ -10,6 +11,7 @@ import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.WordMapper;
 import com.sakda.chineselearning.repository.WordRepository;
 import com.sakda.chineselearning.service.WordService;
+import org.springframework.data.domain.Sort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +33,28 @@ public class WordServiceImpl implements WordService {
 	}
 
 	@Override
-	public List<WordDTO> getAll() {
-		return wordRepository.findAll()
-			.stream()
-			.map(wordMapper::toDto)
-			.toList();
+	public Page<WordDTO> getAll(String keyword, int page, int size, String sortBy, String sortDir) {
+		
+		Sort sort = sortDir.equalsIgnoreCase("desc")
+				? Sort.by(sortBy).descending()
+				: Sort.by(sortBy).ascending();
+		
+		Pageable pageable = PageRequest.of(page, size, sort);
+		
+		if (keyword == null || keyword.isBlank()) {
+			return wordRepository.findAll(pageable)
+					.map(wordMapper::toDto);
+		}
+		
+		return wordRepository
+	            .findByChineseContainingIgnoreCaseOrPinyinContainingIgnoreCaseOrEnglishContainingIgnoreCaseOrKhmerContainingIgnoreCase(
+	                    keyword,
+	                    keyword,
+	                    keyword,
+	                    keyword,
+	                    pageable
+	            )
+	            .map(wordMapper::toDto);
 	}
 
 	@Override
