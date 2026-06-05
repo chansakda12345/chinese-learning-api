@@ -1,8 +1,9 @@
 package com.sakda.chineselearning.service;
 
-import com.sakda.chineselearning.dto.LessonDTO;
-
 import java.util.List;
+
+import com.sakda.chineselearning.dto.LessonDTO;
+import com.sakda.chineselearning.dto.LessonDetailDTO;
 
 public interface LessonService {
 
@@ -15,4 +16,7 @@ public interface LessonService {
     LessonDTO update(Long id, LessonDTO lessonDTO);
 
     void delete(Long id);
+    
+    LessonDetailDTO getLessonDetails(Long id);
+ 
 }

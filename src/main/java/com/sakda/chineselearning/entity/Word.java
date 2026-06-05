@@ -1,6 +1,8 @@
 package com.sakda.chineselearning.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,4 +29,10 @@ public class Word {
 	private String level;
 	
 	private String audioUrl;
+	
+	@ManyToOne
+	@JoinColumn(name = "lesson_id")
+	private Lesson lesson;
+	
+	
 }

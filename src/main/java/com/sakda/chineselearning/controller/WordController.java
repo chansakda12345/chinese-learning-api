@@ -1,5 +1,6 @@
 package com.sakda.chineselearning.controller;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,5 +97,22 @@ public class WordController {
 	            )
 	    );
 	}
+	
+	@PutMapping("/{wordId}/lesson/{lessonId}")
+	public ResponseEntity<ApiResponse<WordDTO>> assignLesson(
+			@PathVariable Long wordId,
+			@PathVariable Long lessonId
+	) {
+		WordDTO assignLesson = wordService.assignLesson(wordId, lessonId);
+		
+		return ResponseEntity.ok(
+				new ApiResponse<>(
+						true,
+						"Word assigned to lesson successfully",
+						assignLesson
+						)
+				);
+	}
+	
 
 }

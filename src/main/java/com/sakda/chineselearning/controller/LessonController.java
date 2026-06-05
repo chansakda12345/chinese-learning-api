@@ -6,6 +6,7 @@ import com.sakda.chineselearning.service.LessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.sakda.chineselearning.dto.LessonDetailDTO;
 
 import java.util.List;
 
@@ -63,4 +64,19 @@ public class LessonController {
                 new ApiResponse<>(true, "Lesson deleted successfully", null)
         );
     }
+    
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ApiResponse<LessonDetailDTO>> getLessonDetails(@PathVariable Long id) {
+    	
+    	LessonDetailDTO lessonDetails = lessonService.getLessonDetails(id);
+    	
+    	return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Lesson details retrieved successfully",
+                        lessonDetails
+                )
+        );
+    }
+    
 }

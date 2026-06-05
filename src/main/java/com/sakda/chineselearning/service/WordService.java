@@ -21,4 +21,6 @@ public interface WordService {
     WordDTO update(Long id, WordDTO dto);
 
     void delete(Long id);
+    
+    WordDTO assignLesson(Long wordId, Long lessonId);
 }

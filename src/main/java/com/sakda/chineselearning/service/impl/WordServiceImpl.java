@@ -3,15 +3,17 @@ package com.sakda.chineselearning.service.impl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.dto.WordDTO;
+import com.sakda.chineselearning.entity.Lesson;
 import com.sakda.chineselearning.entity.Word;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.WordMapper;
+import com.sakda.chineselearning.repository.LessonRepository;
 import com.sakda.chineselearning.repository.WordRepository;
 import com.sakda.chineselearning.service.WordService;
-import org.springframework.data.domain.Sort;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +23,7 @@ public class WordServiceImpl implements WordService {
 	
 	private final WordRepository wordRepository;
 	private final WordMapper wordMapper;
+	private final LessonRepository lessonRepository;
 
 	@Override
 	public WordDTO create(WordDTO dto) {
@@ -90,6 +93,23 @@ public class WordServiceImpl implements WordService {
 		
 		wordRepository.delete(word);
 		
+	}
+
+	@Override
+	public WordDTO assignLesson(Long wordId, Long lessonId) {
+
+	    Word word = wordRepository.findById(wordId)
+	            .orElseThrow(() -> new ResourceNotFoundException(
+	                    "Word not found with id: " + wordId));
+
+	    Lesson lesson = lessonRepository.findById(lessonId)
+	            .orElseThrow(() -> new ResourceNotFoundException(
+	                    "Lesson not found with id: " + lessonId));
+	    
+	    word.setLesson(lesson);
+	    Word savedWord = wordRepository.save(word);
+
+	    return wordMapper.toDto(savedWord);
 	}
 
 }

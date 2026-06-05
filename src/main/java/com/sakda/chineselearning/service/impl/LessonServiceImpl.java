@@ -1,6 +1,7 @@
 package com.sakda.chineselearning.service.impl;
 
 import com.sakda.chineselearning.dto.LessonDTO;
+import com.sakda.chineselearning.dto.LessonDetailDTO;
 import com.sakda.chineselearning.entity.Lesson;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.LessonMapper;
@@ -60,5 +61,15 @@ public class LessonServiceImpl implements LessonService {
                 .orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id: " + id));
 
         lessonRepository.delete(lesson);
+    }
+
+    @Override
+    public LessonDetailDTO getLessonDetails(Long id) {
+
+        Lesson lesson = lessonRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Lesson not found with id: " + id));
+
+        return lessonMapper.toDetailDto(lesson);
     }
 }
