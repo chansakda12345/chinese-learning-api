@@ -14,3 +14,6 @@ spring:
   properties:
    hibernate:
     format_sql: true
+jwt:
+ secret: MySuperSecretKeyForChineseLearningApplication2026MySuperSecretKey
+ expiration: 86400000
