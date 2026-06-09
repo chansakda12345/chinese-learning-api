@@ -1,16 +1,20 @@
 package com.sakda.chineselearning.service.impl;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
+import com.sakda.chineselearning.dto.QuizDTO;
 import com.sakda.chineselearning.entity.Lesson;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.LessonMapper;
+import com.sakda.chineselearning.mapper.QuestionMapper;
 import com.sakda.chineselearning.repository.LessonRepository;
 import com.sakda.chineselearning.service.LessonService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +22,7 @@ public class LessonServiceImpl implements LessonService {
 
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
+    private final QuestionMapper questionMapper;
 
     @Override
     public LessonDTO create(LessonDTO lessonDTO) {
@@ -72,4 +77,26 @@ public class LessonServiceImpl implements LessonService {
 
         return lessonMapper.toDetailDto(lesson);
     }
+
+	@Override
+	public QuizDTO getQuizByLessonId(Long lessonId) {
+		
+		Lesson lesson = lessonRepository.findById(lessonId)
+				.orElseThrow(() -> 
+					new ResourceNotFoundException("Lesson not found with id: " + lessonId
+		));
+		
+		QuizDTO quizDTO = new QuizDTO();
+		
+		quizDTO.setLessonId(lesson.getId());
+		quizDTO.setTitle(lesson.getTitle());
+		
+		quizDTO.setQuestions(
+				lesson.getQuestions()
+				.stream()
+				.map(questionMapper::toQuestionStudentDTO)
+				.toList()
+		);
+		return quizDTO;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
+import com.sakda.chineselearning.dto.QuizDTO;
 
 public interface LessonService {
 
@@ -18,5 +19,7 @@ public interface LessonService {
     void delete(Long id);
     
     LessonDetailDTO getLessonDetails(Long id);
+    
+    QuizDTO getQuizByLessonId(Long lessonId);
  
 }

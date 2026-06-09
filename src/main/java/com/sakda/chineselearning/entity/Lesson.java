@@ -25,5 +25,8 @@ public class Lesson {
 	
 	@OneToMany(mappedBy = "lesson")
 	private List<Word> words;
+	
+	@OneToMany(mappedBy = "lesson")
+	private List<Question> questions;
 
 }

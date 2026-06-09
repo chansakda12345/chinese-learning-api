@@ -5,9 +5,7 @@ import java.util.List;
 import com.sakda.chineselearning.dto.QuestionDTO;
 
 public interface QuestionService {
-	
-	QuestionDTO createQuestion(QuestionDTO questionDTO);
-	
+		
 	List<QuestionDTO> getQuestions();
 	
 	QuestionDTO getQuestionById(Long id);
@@ -15,5 +13,10 @@ public interface QuestionService {
 	QuestionDTO updateQuestion(Long id, QuestionDTO questionDTO);
 	
 	void deleteQuestion(Long id);
+	
+	QuestionDTO createQuestionForLesson(
+	        Long lessonId,
+	        QuestionDTO questionDTO
+	);
 
 }

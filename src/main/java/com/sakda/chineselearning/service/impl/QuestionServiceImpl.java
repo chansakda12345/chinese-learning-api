@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.dto.QuestionDTO;
+import com.sakda.chineselearning.entity.Lesson;
 import com.sakda.chineselearning.entity.Question;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.QuestionMapper;
+import com.sakda.chineselearning.repository.LessonRepository;
 import com.sakda.chineselearning.repository.QuestionRepository;
 import com.sakda.chineselearning.service.QuestionService;
 
@@ -20,18 +22,8 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
 
     private final QuestionMapper questionMapper;
-
-	@Override
-	public QuestionDTO createQuestion(QuestionDTO questionDTO) {
-		
-		Question question = 
-				questionMapper.toQuestion(questionDTO);
-		
-		Question savedQuestion = 
-				questionRepository.save(question);
-		
-		return questionMapper.toQuestionDTO(savedQuestion);
-	}
+    
+    private final LessonRepository lessonRepository;
 
 	@Override
 	public List<QuestionDTO> getQuestions() {
@@ -84,5 +76,29 @@ public class QuestionServiceImpl implements QuestionService {
 		
 		questionRepository.delete(question);
 		
+	}
+
+	@Override
+	public QuestionDTO createQuestionForLesson(
+	        Long lessonId,
+	        QuestionDTO questionDTO
+	) {
+
+	    Lesson lesson =
+	            lessonRepository.findById(lessonId)
+	                    .orElseThrow(() ->
+	                            new ResourceNotFoundException(
+	                                    "Lesson not found with id: " + lessonId
+	                            ));
+
+	    Question question =
+	            questionMapper.toQuestion(questionDTO);
+
+	    question.setLesson(lesson);
+
+	    Question createdQuestion =
+	            questionRepository.save(question);
+
+	    return questionMapper.toQuestionDTO(createdQuestion);
 	}
 }
