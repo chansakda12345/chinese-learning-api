@@ -7,6 +7,7 @@ import com.sakda.chineselearning.dto.QuizResultDTO;
 import com.sakda.chineselearning.dto.QuizSubmitDTO;
 import com.sakda.chineselearning.entity.Lesson;
 import com.sakda.chineselearning.entity.Question;
+import com.sakda.chineselearning.exception.BusinessException;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.repository.LessonRepository;
 import com.sakda.chineselearning.repository.QuestionRepository;
@@ -33,7 +34,7 @@ public class QuizServiceImpl implements QuizService {
 		int total = quizSubmitDTO.getAnswers().size();
 		
 		if (total == 0) {
-		    throw new RuntimeException(
+		    throw new BusinessException(
 		            "Quiz answers cannot be empty"
 		    );
 		}
@@ -51,7 +52,7 @@ public class QuizServiceImpl implements QuizService {
 		    
 		    if (!question.getLesson().getId().equals(lesson.getId())) {
 		    	
-		    	throw new RuntimeException(
+		    	throw new BusinessException(
 		    			"Question does not belong to this lesson"
 		    			);
 		    }
