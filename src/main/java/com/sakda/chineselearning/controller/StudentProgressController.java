@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sakda.chineselearning.dto.ApiResponse;
+import com.sakda.chineselearning.dto.DashboardDTO;
 import com.sakda.chineselearning.dto.ProgressDTO;
 import com.sakda.chineselearning.service.StudentProgressService;
 
@@ -31,6 +32,19 @@ public class StudentProgressController {
 						progresses
 						)
 				);
+	}
+	
+	@GetMapping("/dashboard")
+	public ResponseEntity<ApiResponse<DashboardDTO>> getDashboard() {
+		
+		DashboardDTO dashboard = studentProgressService.getDashboard();
+		return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "Dashboard retrieved successfully",
+	                    dashboard
+	            )
+	    );
 	}
 
 }
