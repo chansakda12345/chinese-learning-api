@@ -1,6 +1,7 @@
 package com.sakda.chineselearning.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sakda.chineselearning.dto.WordDTO;
 
@@ -23,4 +24,6 @@ public interface WordService {
     void delete(Long id);
     
     WordDTO assignLesson(Long wordId, Long lessonId);
+    
+    WordDTO uploadAudio(Long wordId, MultipartFile file);
 }

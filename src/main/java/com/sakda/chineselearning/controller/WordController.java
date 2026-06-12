@@ -1,7 +1,7 @@
 package com.sakda.chineselearning.controller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.dto.WordDTO;
 import com.sakda.chineselearning.service.WordService;
-import jakarta.validation.Valid;
-import com.sakda.chineselearning.dto.ApiResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -112,6 +111,20 @@ public class WordController {
 						assignLesson
 						)
 				);
+	}
+	
+	@PostMapping("{id}/audio")
+	public ResponseEntity<ApiResponse<WordDTO>> uploadAudio(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
+		
+		WordDTO word = wordService.uploadAudio(id, file);
+		
+		return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "Audio uploaded successfully",
+	                    word
+	            )
+	    );
 	}
 	
 

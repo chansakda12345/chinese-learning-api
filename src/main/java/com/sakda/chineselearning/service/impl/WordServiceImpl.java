@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sakda.chineselearning.dto.WordDTO;
 import com.sakda.chineselearning.entity.Lesson;
@@ -13,6 +14,7 @@ import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.WordMapper;
 import com.sakda.chineselearning.repository.LessonRepository;
 import com.sakda.chineselearning.repository.WordRepository;
+import com.sakda.chineselearning.service.FileStorageService;
 import com.sakda.chineselearning.service.WordService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,12 @@ public class WordServiceImpl implements WordService {
 	private final WordRepository wordRepository;
 	private final WordMapper wordMapper;
 	private final LessonRepository lessonRepository;
+	private final FileStorageService fileStorageService;
 
 	@Override
 	public WordDTO create(WordDTO dto) {
 
-	    return wordMapper.toDto (
+	    return wordMapper.toWordDTO (
 	            wordRepository.save(
 	                    wordMapper.toEntity(dto)
 	            )
@@ -46,7 +49,7 @@ public class WordServiceImpl implements WordService {
 		
 		if (keyword == null || keyword.isBlank()) {
 			return wordRepository.findAll(pageable)
-					.map(wordMapper::toDto);
+					.map(wordMapper::toWordDTO);
 		}
 		
 		return wordRepository
@@ -57,14 +60,14 @@ public class WordServiceImpl implements WordService {
 	                    keyword,
 	                    pageable
 	            )
-	            .map(wordMapper::toDto);
+	            .map(wordMapper::toWordDTO);
 	}
 
 	@Override
 	public WordDTO getById(Long id) {
 		Word word = wordRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("Word not found"));
-		return wordMapper.toDto(word);
+		return wordMapper.toWordDTO(word);
 	}
 
 	@Override
@@ -82,7 +85,7 @@ public class WordServiceImpl implements WordService {
 		
 		Word updateWord = wordRepository.save(word);
 		
-		return wordMapper.toDto(updateWord);
+		return wordMapper.toWordDTO(updateWord);
 	}
 
 	@Override
@@ -109,7 +112,22 @@ public class WordServiceImpl implements WordService {
 	    word.setLesson(lesson);
 	    Word savedWord = wordRepository.save(word);
 
-	    return wordMapper.toDto(savedWord);
+	    return wordMapper.toWordDTO(savedWord);
+	}
+
+	@Override
+	public WordDTO uploadAudio(Long wordId, MultipartFile file) {
+		
+		Word word = wordRepository.findById(wordId)
+				.orElseThrow(() -> new ResourceNotFoundException("Word not found with id: " + wordId));
+		
+		String audioUrl = fileStorageService.uploadAudio(file);
+		
+		word.setAudioUrl(audioUrl);
+		
+		Word savedWord = wordRepository.save(word);
+		
+		return wordMapper.toWordDTO(savedWord);
 	}
 
 }

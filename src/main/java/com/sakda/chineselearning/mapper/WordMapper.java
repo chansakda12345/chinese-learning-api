@@ -10,5 +10,5 @@ public interface WordMapper {
 	
 	Word toEntity(WordDTO dto);
 	
-	WordDTO toDto(Word entity);
+	WordDTO toWordDTO(Word entity);
 }

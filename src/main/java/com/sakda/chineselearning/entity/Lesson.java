@@ -23,6 +23,8 @@ public class Lesson {
 	
 	private String description;
 	
+	private String thumbnailUrl;
+	
 	@OneToMany(mappedBy = "lesson")
 	private List<Word> words;
 	

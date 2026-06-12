@@ -2,6 +2,8 @@ package com.sakda.chineselearning.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
 import com.sakda.chineselearning.dto.QuizDTO;
@@ -21,5 +23,7 @@ public interface LessonService {
     LessonDetailDTO getLessonDetails(Long id);
     
     QuizDTO getQuizByLessonId(Long lessonId);
+    
+    LessonDTO uploadThumbnail(Long lessonId, MultipartFile file);
  
 }

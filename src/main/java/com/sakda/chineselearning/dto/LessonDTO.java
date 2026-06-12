@@ -10,4 +10,6 @@ public class LessonDTO {
 	private String title;
 	
 	private String description;
+	
+	private String thumbnailUrl;
 }

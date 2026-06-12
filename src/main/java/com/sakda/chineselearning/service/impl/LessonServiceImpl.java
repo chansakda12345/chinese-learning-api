@@ -3,6 +3,7 @@ package com.sakda.chineselearning.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
@@ -12,6 +13,7 @@ import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.LessonMapper;
 import com.sakda.chineselearning.mapper.QuestionMapper;
 import com.sakda.chineselearning.repository.LessonRepository;
+import com.sakda.chineselearning.service.FileStorageService;
 import com.sakda.chineselearning.service.LessonService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
     private final QuestionMapper questionMapper;
+    private final FileStorageService fileStorageService;
 
     @Override
     public LessonDTO create(LessonDTO lessonDTO) {
@@ -98,5 +101,20 @@ public class LessonServiceImpl implements LessonService {
 				.toList()
 		);
 		return quizDTO;
+	}
+
+	@Override
+	public LessonDTO uploadThumbnail(Long lessonId, MultipartFile file) {
+		
+		Lesson lesson = lessonRepository.findById(lessonId)
+			.orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id" + lessonId));
+		
+		String imageUrl = fileStorageService.uploadImage(file);
+		
+		lesson.setThumbnailUrl(imageUrl);
+		
+		Lesson savedLesson = lessonRepository.save(lesson);
+		
+		return lessonMapper.toDto(savedLesson);
 	}
 }

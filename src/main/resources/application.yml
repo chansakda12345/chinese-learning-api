@@ -17,3 +17,8 @@ spring:
 jwt:
  secret: MySuperSecretKeyForChineseLearningApplication2026MySuperSecretKey
  expiration: 86400000
+ 
+app:
+ upload:
+  audio-dir: uploads/audio
+  image-dir: uploads/images
