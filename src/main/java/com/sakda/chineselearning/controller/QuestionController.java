@@ -15,8 +15,14 @@ import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.dto.QuestionDTO;
 import com.sakda.chineselearning.service.QuestionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(
+	    name = "Question API",
+	    description = "Manage quiz questions for lessons"
+	)
 @RestController
 @RequestMapping("/api/v1/questions")
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class QuestionController {
 	
 	private final QuestionService questionService;
 	
+	@Operation(summary = "Get all questions")
 	@GetMapping
 	public ResponseEntity<ApiResponse<List<QuestionDTO>>> getQuestions() {
 		
@@ -38,6 +45,7 @@ public class QuestionController {
 				);
 	}
 	
+	@Operation(summary = "Get question by ID")
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<QuestionDTO>> getQuestionById(@PathVariable Long id) {
 		
@@ -52,6 +60,7 @@ public class QuestionController {
 				);
 	}
 	
+	@Operation(summary = "Update question")
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<QuestionDTO>> updateQuestion(@PathVariable Long id, @RequestBody QuestionDTO questionDTO) {
 		
@@ -66,6 +75,7 @@ public class QuestionController {
 				);
 	}
 	
+	@Operation(summary = "Delete question")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<Void>> deleteQuestion(@PathVariable Long id) {
 		

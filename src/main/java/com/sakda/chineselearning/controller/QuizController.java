@@ -11,8 +11,14 @@ import com.sakda.chineselearning.dto.QuizResultDTO;
 import com.sakda.chineselearning.dto.QuizSubmitDTO;
 import com.sakda.chineselearning.service.QuizService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(
+	    name = "Quiz API",
+	    description = "Submit quizzes and calculate scores"
+	)
 @RestController
 @RequestMapping("/api/v1/quizzes")
 @RequiredArgsConstructor
@@ -20,6 +26,7 @@ public class QuizController {
 	
 	private final QuizService quizService;
 	
+	@Operation(summary = "Submit quiz answers and calculate score")	
 	@PostMapping("/submit")
 	public ResponseEntity<ApiResponse<QuizResultDTO>> submitQuiz(@RequestBody QuizSubmitDTO quizSubmitDTO) {
 		

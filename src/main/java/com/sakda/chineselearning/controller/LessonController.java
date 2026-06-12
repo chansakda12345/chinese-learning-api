@@ -22,124 +22,96 @@ import com.sakda.chineselearning.dto.QuizDTO;
 import com.sakda.chineselearning.service.LessonService;
 import com.sakda.chineselearning.service.QuestionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Lesson API", description = "Manage Chinese learning lessons and thumbnails")
 @RestController
 @RequestMapping("/api/v1/lessons")
 @RequiredArgsConstructor
 public class LessonController {
 
-    private final LessonService lessonService;
-    
-    private final QuestionService questionService;
-    
-    @PostMapping
-    public ResponseEntity<ApiResponse<LessonDTO>> create(@RequestBody LessonDTO lessonDTO) {
-        LessonDTO createdLesson = lessonService.create(lessonDTO);
+	private final LessonService lessonService;
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Lesson created successfully", createdLesson)
-        );
-    }
-    
-    @PostMapping("/{lessonId}/questions")
-    public ResponseEntity<ApiResponse<QuestionDTO>> createQuestionForLesson(
-    		@PathVariable Long lessonId,
-    		@RequestBody QuestionDTO questionDTO
-    ) {
-    	
-    	QuestionDTO createdQuestion = questionService.createQuestionForLesson(lessonId, questionDTO);
-    	
-    	return ResponseEntity.ok(
-    			new ApiResponse<>(
-    					true,
-    					"Question created for lesson successfully",
-    					createdQuestion
-    					)
-    		);
-    }
-    
-    @GetMapping("/{lessonId}/quiz")
-    public ResponseEntity<ApiResponse<QuizDTO>> getQuizByLessonId(
-            @PathVariable Long lessonId
-    ) {
-    	QuizDTO quizDTO =
-    			lessonService.getQuizByLessonId(lessonId);
-    	
-    	return ResponseEntity.ok(
-                new ApiResponse<>(
-                        true,
-                        "Quiz retrieved successfully",
-                        quizDTO
-                )
-        );
-    }
+	private final QuestionService questionService;
 
-    @GetMapping
-    public ResponseEntity<ApiResponse<List<LessonDTO>>> getAll() {
-        List<LessonDTO> lessons = lessonService.getAll();
+	@Operation(summary = "Create a new lesson")
+	@PostMapping
+	public ResponseEntity<ApiResponse<LessonDTO>> create(@RequestBody LessonDTO lessonDTO) {
+		LessonDTO createdLesson = lessonService.create(lessonDTO);
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Lessons retrieved successfully", lessons)
-        );
-    }
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson created successfully", createdLesson));
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<LessonDTO>> getById(@PathVariable Long id) {
-        LessonDTO lesson = lessonService.getById(id);
+	@Operation(summary = "Create question to a Chinese lesson")
+	@PostMapping("/{lessonId}/questions")
+	public ResponseEntity<ApiResponse<QuestionDTO>> createQuestionForLesson(@PathVariable Long lessonId,
+			@RequestBody QuestionDTO questionDTO) {
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Lesson retrieved successfully", lesson)
-        );
-    }
+		QuestionDTO createdQuestion = questionService.createQuestionForLesson(lessonId, questionDTO);
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<LessonDTO>> update(
-            @PathVariable Long id,
-            @RequestBody LessonDTO lessonDTO) {
+		return ResponseEntity.ok(new ApiResponse<>(true, "Question created for lesson successfully", createdQuestion));
+	}
 
-        LessonDTO updatedLesson = lessonService.update(id, lessonDTO);
+	@Operation(summary = "Get quiz questions for a lesson")
+	@GetMapping("/{lessonId}/quiz")
+	public ResponseEntity<ApiResponse<QuizDTO>> getQuizByLessonId(@PathVariable Long lessonId) {
+		QuizDTO quizDTO = lessonService.getQuizByLessonId(lessonId);
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Lesson updated successfully", updatedLesson)
-        );
-    }
+		return ResponseEntity.ok(new ApiResponse<>(true, "Quiz retrieved successfully", quizDTO));
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
-        lessonService.delete(id);
+	@Operation(summary = "Get all lessons")
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<LessonDTO>>> getAll() {
+		List<LessonDTO> lessons = lessonService.getAll();
 
-        return ResponseEntity.ok(
-                new ApiResponse<>(true, "Lesson deleted successfully", null)
-        );
-    }
-    
-    @GetMapping("/{id}/details")
-    public ResponseEntity<ApiResponse<LessonDetailDTO>> getLessonDetails(@PathVariable Long id) {
-    	
-    	LessonDetailDTO lessonDetails = lessonService.getLessonDetails(id);
-    	
-    	return ResponseEntity.ok(
-                new ApiResponse<>(
-                        true,
-                        "Lesson details retrieved successfully",
-                        lessonDetails
-                )
-        );
-    }
-    
-    @PostMapping("/{id}/thumbnail")
-    public ResponseEntity<ApiResponse<LessonDTO>> uploadThumbnail(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
-    	
-    	LessonDTO lesson = lessonService.uploadThumbnail(id, file);
-    	
-    	return ResponseEntity.ok(
-                new ApiResponse<>(
-                        true,
-                        "Thumbnail uploaded successfully",
-                        lesson
-                )
-        );
-    }
-    
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lessons retrieved successfully", lessons));
+	}
+
+	@Operation(summary = "Get lesson by ID")
+	@GetMapping("/{id}")
+	public ResponseEntity<ApiResponse<LessonDTO>> getById(@PathVariable Long id) {
+		LessonDTO lesson = lessonService.getById(id);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson retrieved successfully", lesson));
+	}
+
+	@Operation(summary = "Update lesson")
+	@PutMapping("/{id}")
+	public ResponseEntity<ApiResponse<LessonDTO>> update(@PathVariable Long id, @RequestBody LessonDTO lessonDTO) {
+
+		LessonDTO updatedLesson = lessonService.update(id, lessonDTO);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson updated successfully", updatedLesson));
+	}
+
+	@Operation(summary = "Delete a Chinese lesson")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+		lessonService.delete(id);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson deleted successfully", null));
+	}
+
+	@Operation(summary = "Get detailed lesson information")
+	@GetMapping("/{id}/details")
+	public ResponseEntity<ApiResponse<LessonDetailDTO>> getLessonDetails(@PathVariable Long id) {
+
+		LessonDetailDTO lessonDetails = lessonService.getLessonDetails(id);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson details retrieved successfully", lessonDetails));
+	}
+
+	@Operation(summary = "Upload lesson thumbnail")
+	@PostMapping("/{id}/thumbnail")
+	public ResponseEntity<ApiResponse<LessonDTO>> uploadThumbnail(@PathVariable Long id,
+			@RequestParam("file") MultipartFile file) {
+
+		LessonDTO lesson = lessonService.uploadThumbnail(id, file);
+
+		return ResponseEntity.ok(new ApiResponse<>(true, "Thumbnail uploaded successfully", lesson));
+	}
+
 }

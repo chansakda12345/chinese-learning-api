@@ -17,9 +17,15 @@ import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.dto.WordDTO;
 import com.sakda.chineselearning.service.WordService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(
+	    name = "Word API",
+	    description = "Manage Chinese words"
+	)
 @RestController
 @RequestMapping("/api/v1/words")
 @RequiredArgsConstructor
@@ -27,6 +33,7 @@ public class WordController {
 	
 	private final WordService wordService;
 	
+	@Operation(summary = "Create a new Chinese word")
 	@PostMapping
 	public ResponseEntity<ApiResponse<WordDTO>> create(@Valid @RequestBody WordDTO wordDTO) {
 		WordDTO createWord = wordService.create(wordDTO);
@@ -39,7 +46,7 @@ public class WordController {
 				);
 	}
 	
-	
+	@Operation(summary = "Get all Chinese words")
 	@GetMapping
 	public ResponseEntity<ApiResponse<Page<WordDTO>>> getAll(
 			@RequestParam(required = false) String keyword,
@@ -59,6 +66,7 @@ public class WordController {
 				);
 	}
 	
+	@Operation(summary = "Get Chinese word by ID")
 	@GetMapping("/{id}")
 	public  ResponseEntity<ApiResponse<WordDTO>> getById(@PathVariable Long id) {
 		WordDTO word = wordService.getById(id);
@@ -71,6 +79,7 @@ public class WordController {
 				);			
 	}
 	
+	@Operation(summary = "Update Chinese word")
 	@PutMapping("/{id}")
 	public ResponseEntity<ApiResponse<WordDTO>> updateById(@PathVariable Long id, @Valid @RequestBody WordDTO wordDTO) {
 		WordDTO updateWord = wordService.update(id, wordDTO);
@@ -83,6 +92,7 @@ public class WordController {
 				);
 	}
 	
+	@Operation(summary = "Delete Chinese word")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
 
@@ -97,6 +107,7 @@ public class WordController {
 	    );
 	}
 	
+	@Operation(summary = "Assign a Chinese word to a lesson")
 	@PutMapping("/{wordId}/lesson/{lessonId}")
 	public ResponseEntity<ApiResponse<WordDTO>> assignLesson(
 			@PathVariable Long wordId,
@@ -113,6 +124,7 @@ public class WordController {
 				);
 	}
 	
+	@Operation(summary = "Upload audio pronunciation for a word")
 	@PostMapping("{id}/audio")
 	public ResponseEntity<ApiResponse<WordDTO>> uploadAudio(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
 		
