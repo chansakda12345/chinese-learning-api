@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sakda.chineselearning.dto.LessonContentDTO;
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
 import com.sakda.chineselearning.dto.QuizDTO;
+import com.sakda.chineselearning.enums.HskLevel;
 
 public interface LessonService {
 
@@ -25,5 +27,9 @@ public interface LessonService {
     QuizDTO getQuizByLessonId(Long lessonId);
     
     LessonDTO uploadThumbnail(Long lessonId, MultipartFile file);
+    
+    LessonDTO updatedLesson(Long lessonId, LessonContentDTO dto);
+    
+    List<LessonDTO> getAll(HskLevel level);
  
 }

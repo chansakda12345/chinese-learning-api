@@ -1,6 +1,10 @@
 package com.sakda.chineselearning.entity;
 
+import com.sakda.chineselearning.enums.HskLevel;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +30,8 @@ public class Word {
 	
 	private String khmer;
 	
-	private String level;
+	@Enumerated(EnumType.STRING)
+	private HskLevel level;
 	
 	private String audioUrl;
 	

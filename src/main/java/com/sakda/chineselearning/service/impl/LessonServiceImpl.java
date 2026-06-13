@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sakda.chineselearning.dto.LessonContentDTO;
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
 import com.sakda.chineselearning.dto.QuizDTO;
 import com.sakda.chineselearning.entity.Lesson;
+import com.sakda.chineselearning.enums.HskLevel;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.LessonMapper;
 import com.sakda.chineselearning.mapper.QuestionMapper;
@@ -107,7 +109,7 @@ public class LessonServiceImpl implements LessonService {
 	public LessonDTO uploadThumbnail(Long lessonId, MultipartFile file) {
 		
 		Lesson lesson = lessonRepository.findById(lessonId)
-			.orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id" + lessonId));
+			.orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id: " + lessonId));
 		
 		String imageUrl = fileStorageService.uploadImage(file);
 		
@@ -116,5 +118,33 @@ public class LessonServiceImpl implements LessonService {
 		Lesson savedLesson = lessonRepository.save(lesson);
 		
 		return lessonMapper.toDto(savedLesson);
+	}
+
+	@Override
+	public LessonDTO updatedLesson(Long lessonId, LessonContentDTO dto) {
+		
+		Lesson lesson = lessonRepository.findById(lessonId)
+				.orElseThrow(() -> new ResourceNotFoundException("Lesson not found with id: " + lessonId));
+		
+		lesson.setContent(dto.getContent());
+		
+		Lesson savedLesson = lessonRepository.save(lesson);
+		
+		return lessonMapper.toDto(savedLesson);
+	}
+
+	@Override
+	public List<LessonDTO> getAll(HskLevel level) {
+		
+		if (level == null) {
+			return lessonRepository.findAll()
+					.stream()
+					.map(lessonMapper::toDto)
+					.toList();
+		}
+		return lessonRepository.findByLevel(level)
+				.stream()
+				.map(lessonMapper::toDto)
+				.toList();
 	}
 }

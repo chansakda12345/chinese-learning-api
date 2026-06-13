@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sakda.chineselearning.dto.ApiResponse;
+import com.sakda.chineselearning.dto.LessonContentDTO;
 import com.sakda.chineselearning.dto.LessonDTO;
 import com.sakda.chineselearning.dto.LessonDetailDTO;
 import com.sakda.chineselearning.dto.QuestionDTO;
 import com.sakda.chineselearning.dto.QuizDTO;
+import com.sakda.chineselearning.enums.HskLevel;
 import com.sakda.chineselearning.service.LessonService;
 import com.sakda.chineselearning.service.QuestionService;
 
@@ -60,14 +62,6 @@ public class LessonController {
 		QuizDTO quizDTO = lessonService.getQuizByLessonId(lessonId);
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Quiz retrieved successfully", quizDTO));
-	}
-
-	@Operation(summary = "Get all lessons")
-	@GetMapping
-	public ResponseEntity<ApiResponse<List<LessonDTO>>> getAll() {
-		List<LessonDTO> lessons = lessonService.getAll();
-
-		return ResponseEntity.ok(new ApiResponse<>(true, "Lessons retrieved successfully", lessons));
 	}
 
 	@Operation(summary = "Get lesson by ID")
@@ -112,6 +106,33 @@ public class LessonController {
 		LessonDTO lesson = lessonService.uploadThumbnail(id, file);
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Thumbnail uploaded successfully", lesson));
+	}
+	
+	@Operation(summary = "Update lesson content")
+	@PutMapping("/{id}/content")
+	public ResponseEntity<ApiResponse<LessonDTO>> updatedLesson(
+			@PathVariable Long id, 
+			@RequestBody LessonContentDTO lessonContentDTO
+		) {
+		
+		LessonDTO updatedContent = lessonService.updatedLesson(id, lessonContentDTO);
+		
+		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson content updated successfully\"", updatedContent));
+	} 
+	
+	@Operation(summary = "Get all lessons OR Get lessons by HSK level")
+	@GetMapping
+	public ResponseEntity<ApiResponse<List<LessonDTO>>> getAll(@RequestParam(required = false) HskLevel level) {
+		
+		List<LessonDTO> lessons = lessonService.getAll(level);
+		
+		return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "Lessons retrieved successfully",
+	                    lessons
+	            )
+	    );
 	}
 
 }
