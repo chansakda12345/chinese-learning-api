@@ -2,6 +2,7 @@ package com.sakda.chineselearning.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,11 +121,17 @@ public class LessonController {
 		return ResponseEntity.ok(new ApiResponse<>(true, "Lesson content updated successfully\"", updatedContent));
 	} 
 	
-	@Operation(summary = "Get all lessons OR Get lessons by HSK level")
+	@Operation(summary = "Get all lessons OR Search By Level, Keyword, and Sort")
 	@GetMapping
-	public ResponseEntity<ApiResponse<List<LessonDTO>>> getAll(@RequestParam(required = false) HskLevel level) {
+	public ResponseEntity<ApiResponse<Page<LessonDTO>>> getAll(
+			@RequestParam(required = false) HskLevel level,
+			@RequestParam(required = false) String keyword,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "title") String sortBy,
+			@RequestParam(defaultValue = "asc") String sortDir) {
 		
-		List<LessonDTO> lessons = lessonService.getAll(level);
+		Page<LessonDTO> lessons = lessonService.getAll(level, keyword, page, size, sortBy, sortDir);
 		
 		return ResponseEntity.ok(
 	            new ApiResponse<>(

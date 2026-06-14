@@ -2,6 +2,7 @@ package com.sakda.chineselearning.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sakda.chineselearning.dto.LessonContentDTO;
@@ -30,6 +31,13 @@ public interface LessonService {
     
     LessonDTO updatedLesson(Long lessonId, LessonContentDTO dto);
     
-    List<LessonDTO> getAll(HskLevel level);
+    Page<LessonDTO> getAll(
+    		HskLevel level,
+    		String keyword,
+    		int page,
+    		int size,
+    		String sortBy,
+    		String sortDir
+    );
  
 }
