@@ -8,17 +8,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.dto.StudentFavoriteWordDTO;
+import com.sakda.chineselearning.entity.LearningReminder;
 import com.sakda.chineselearning.entity.StudentFavoriteWord;
 import com.sakda.chineselearning.entity.User;
 import com.sakda.chineselearning.entity.Word;
+import com.sakda.chineselearning.enums.ReminderType;
 import com.sakda.chineselearning.exception.BusinessException;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.StudentFavoriteWordMapper;
+import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteWordRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.repository.WordRepository;
 import com.sakda.chineselearning.service.StudentFavoriteWordService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,6 +34,7 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	private final WordRepository wordRepository;
 	private final UserRepository userRepository;
 	private final StudentFavoriteWordMapper studentFavoriteWordMapper;
+	private final LearningReminderRepository learningReminderRepository;
 	
 	@Override
 	public void saveFavoriteWord(Long wordId) {
@@ -51,6 +56,10 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 		
 		studentFavoriteWordRepository.save(favorite);
 		
+		createWordReminder(user, word, 1);
+		createWordReminder(user, word, 3);
+		createWordReminder(user, word, 7);
+		
 	}
 
 	@Override
@@ -63,7 +72,8 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 				.map(studentFavoriteWordMapper::toDTO)
 				.toList();
 	}
-
+	
+	@Transactional
 	@Override
 	public void removeFavoriteWord(Long favoriteId) {
 		
@@ -76,8 +86,12 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 			throw new BusinessException("Favorite word does not belong to current user");
 		}
 		
+
+		learningReminderRepository.deleteByUserAndWordAndTypeAndSentFalse(user, favoriteWord.getWord(), ReminderType.WORD);
+		
 		studentFavoriteWordRepository.delete(favoriteWord);
 	}
+	
 	
 	private User getCurrentUser() {
 	    Authentication authentication =
@@ -88,6 +102,24 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	    return userRepository.findByEmail(email)
 	            .orElseThrow(() ->
 	                    new ResourceNotFoundException("User not found"));
+	}
+	
+	private void createWordReminder(
+			User user,
+			Word word,
+			int daysLater
+			) {
+		
+		LearningReminder reminder = new LearningReminder();
+		
+		reminder.setUser(user);
+		reminder.setWord(word);
+		reminder.setRemindAt(LocalDateTime.now().plusDays(daysLater));
+		reminder.setType(ReminderType.WORD);
+		reminder.setCreatedAt(LocalDateTime.now());
+		reminder.setSent(false);
+		
+		learningReminderRepository.save(reminder);
 	}
 
 }
