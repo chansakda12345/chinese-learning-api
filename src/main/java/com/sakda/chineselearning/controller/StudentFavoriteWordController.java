@@ -64,5 +64,14 @@ public class StudentFavoriteWordController {
 	            )
 	    );
 	}
+	
+	@Operation(summary = "Last review of favorite word")
+	@PostMapping("/{favoriteId}/review")
+	public ResponseEntity<ApiResponse<Void>> reviewFavoriteWord(@PathVariable Long favoriteId) {
+		
+		studentFavoriteWordService.reviewFavoriteWord(favoriteId);
+		
+		return ResponseEntity.ok(new ApiResponse<>(true, "Favorite word reviewed successfully", null));
+	}
 
 }

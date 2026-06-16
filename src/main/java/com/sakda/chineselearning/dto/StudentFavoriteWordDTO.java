@@ -18,4 +18,6 @@ public class StudentFavoriteWordDTO {
 	private String english;
 	
 	private LocalDateTime savedAt;
+	
+	private LocalDateTime lastReviewedAt;
 }

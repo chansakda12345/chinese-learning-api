@@ -92,6 +92,22 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 		studentFavoriteWordRepository.delete(favoriteWord);
 	}
 	
+	@Override
+	public void reviewFavoriteWord(Long favoriteId) {
+		
+		User user = getCurrentUser();
+		
+		StudentFavoriteWord favoriteWord = studentFavoriteWordRepository.findById(favoriteId)
+			.orElseThrow(() -> new ResourceNotFoundException("Favorite word not found with id: " + favoriteId));
+		
+		if (!favoriteWord.getUser().getId().equals(user.getId())) {
+			throw new BusinessException("Favorite word does not belong to current user");
+		}
+		
+		favoriteWord.setLastReviewedAt(LocalDateTime.now());
+		
+		studentFavoriteWordRepository.save(favoriteWord);
+	}
 	
 	private User getCurrentUser() {
 	    Authentication authentication =
@@ -121,5 +137,6 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 		
 		learningReminderRepository.save(reminder);
 	}
+
 
 }
