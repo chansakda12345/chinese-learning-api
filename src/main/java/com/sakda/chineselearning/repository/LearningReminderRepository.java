@@ -1,5 +1,8 @@
 package com.sakda.chineselearning.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.sakda.chineselearning.entity.LearningReminder;
@@ -20,5 +23,7 @@ public interface LearningReminderRepository extends JpaRepository<LearningRemind
 	        Word word,
 	        ReminderType type
 	);
+	
+	List<LearningReminder> findBySentFalseAndRemindAtLessThanEqual(LocalDateTime now);
 
 }

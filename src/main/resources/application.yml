@@ -22,3 +22,5 @@ app:
  upload:
   audio-dir: uploads/audio
   image-dir: uploads/images
+telegram:
+ bot-token: 8933476984:AAF2FmUwXfCx4LhqaCoiEjE0mQj_HE4oxTU
