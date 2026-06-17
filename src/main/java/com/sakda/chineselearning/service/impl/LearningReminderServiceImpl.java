@@ -10,6 +10,7 @@ import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.service.LearningReminderService;
 import com.sakda.chineselearning.service.TelegramService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -19,6 +20,7 @@ public class LearningReminderServiceImpl implements LearningReminderService {
 	private final LearningReminderRepository learningReminderRepository;
 	private final TelegramService telegramService;
 	
+	@Transactional
 	@Override
     public void processDueReminders() {
 

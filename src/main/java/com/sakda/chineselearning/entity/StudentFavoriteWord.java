@@ -24,6 +24,10 @@ public class StudentFavoriteWord {
 	
 	private LocalDateTime lastReviewedAt;
 	
+	private Integer reviewCount;
+	
+	private LocalDateTime nextReviewAt;
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;

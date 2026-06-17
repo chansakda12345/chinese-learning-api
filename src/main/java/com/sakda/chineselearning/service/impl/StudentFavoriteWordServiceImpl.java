@@ -36,6 +36,7 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	private final StudentFavoriteWordMapper studentFavoriteWordMapper;
 	private final LearningReminderRepository learningReminderRepository;
 	
+	@Transactional
 	@Override
 	public void saveFavoriteWord(Long wordId) {
 		
@@ -48,18 +49,20 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 			return;
 		}
 		
-		StudentFavoriteWord favorite = new StudentFavoriteWord();
-		
-		favorite.setUser(user);
-		favorite.setWord(word);
-		favorite.setSavedAt(LocalDateTime.now());
-		
-		studentFavoriteWordRepository.save(favorite);
-		
-		createWordReminder(user, word, 1);
-		createWordReminder(user, word, 3);
-		createWordReminder(user, word, 7);
-		
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime nextReviewAt = now.plusDays(1);
+
+	    StudentFavoriteWord favorite = new StudentFavoriteWord();
+
+	    favorite.setUser(user);
+	    favorite.setWord(word);
+	    favorite.setSavedAt(now);
+	    favorite.setReviewCount(0);
+	    favorite.setNextReviewAt(nextReviewAt);
+
+	    studentFavoriteWordRepository.save(favorite);
+
+	    createWordReminder(user, word, nextReviewAt);		
 	}
 
 	@Override
@@ -92,21 +95,40 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 		studentFavoriteWordRepository.delete(favoriteWord);
 	}
 	
+	@Transactional
 	@Override
 	public void reviewFavoriteWord(Long favoriteId) {
-		
-		User user = getCurrentUser();
-		
-		StudentFavoriteWord favoriteWord = studentFavoriteWordRepository.findById(favoriteId)
-			.orElseThrow(() -> new ResourceNotFoundException("Favorite word not found with id: " + favoriteId));
-		
-		if (!favoriteWord.getUser().getId().equals(user.getId())) {
-			throw new BusinessException("Favorite word does not belong to current user");
-		}
-		
-		favoriteWord.setLastReviewedAt(LocalDateTime.now());
-		
-		studentFavoriteWordRepository.save(favoriteWord);
+
+	    User user = getCurrentUser();
+
+	    StudentFavoriteWord favoriteWord = studentFavoriteWordRepository.findById(favoriteId)
+	            .orElseThrow(() -> new ResourceNotFoundException(
+	                    "Favorite word not found with id: " + favoriteId));
+
+	    if (!favoriteWord.getUser().getId().equals(user.getId())) {
+	        throw new BusinessException("Favorite word does not belong to current user");
+	    }
+
+	    Integer currentCount = favoriteWord.getReviewCount();
+
+	    int newReviewCount = 
+	    		currentCount == null 
+	    		? 1 
+	    		: currentCount + 1;
+	    
+	    LocalDateTime now = LocalDateTime.now();
+	    
+	    LocalDateTime nextReviewAt = calculateNextReviewAt(now, newReviewCount);
+
+	    favoriteWord.setReviewCount(newReviewCount);
+	    favoriteWord.setLastReviewedAt(now);
+	    favoriteWord.setNextReviewAt(nextReviewAt);
+
+	    studentFavoriteWordRepository.save(favoriteWord);
+	    
+	    learningReminderRepository.deleteByUserAndWordAndTypeAndSentFalse(user, favoriteWord.getWord(), ReminderType.WORD);
+	    
+	    createWordReminder(user, favoriteWord.getWord(), nextReviewAt);
 	}
 	
 	private User getCurrentUser() {
@@ -123,19 +145,36 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	private void createWordReminder(
 			User user,
 			Word word,
-			int daysLater
+			LocalDateTime remindAt
 			) {
 		
 		LearningReminder reminder = new LearningReminder();
 		
 		reminder.setUser(user);
 		reminder.setWord(word);
-		reminder.setRemindAt(LocalDateTime.now().plusDays(daysLater));
 		reminder.setType(ReminderType.WORD);
-		reminder.setCreatedAt(LocalDateTime.now());
 		reminder.setSent(false);
+		reminder.setCreatedAt(LocalDateTime.now());
+		reminder.setRemindAt(remindAt);
 		
 		learningReminderRepository.save(reminder);
+	}
+	
+	private LocalDateTime calculateNextReviewAt(LocalDateTime now, int reviewCount) {
+
+	    if (reviewCount == 1) {
+	        return now.plusDays(1);
+	    }
+
+	    if (reviewCount == 2) {
+	        return now.plusDays(3);
+	    }
+
+	    if (reviewCount == 3) {
+	        return now.plusDays(7);
+	    }
+
+	    return now.plusDays(14);
 	}
 
 
