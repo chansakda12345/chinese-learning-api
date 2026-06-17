@@ -131,6 +131,20 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	    createWordReminder(user, favoriteWord.getWord(), nextReviewAt);
 	}
 	
+	@Override
+	public List<StudentFavoriteWordDTO> getReviewDueWords() {
+		
+		User user = getCurrentUser();
+		
+		List<StudentFavoriteWordDTO> favoriteWords = studentFavoriteWordRepository
+				.findByUserAndNextReviewAtLessThanEqual(user, LocalDateTime.now())
+				.stream()
+				.map(studentFavoriteWordMapper::toDTO)
+				.toList();
+		
+		return favoriteWords;
+	}
+	
 	private User getCurrentUser() {
 	    Authentication authentication =
 	            SecurityContextHolder.getContext().getAuthentication();
@@ -176,6 +190,8 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 
 	    return now.plusDays(14);
 	}
+
+
 
 
 }

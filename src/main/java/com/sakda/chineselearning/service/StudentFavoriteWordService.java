@@ -13,4 +13,6 @@ public interface StudentFavoriteWordService {
 	void removeFavoriteWord(Long favoriteId);
 	
 	void reviewFavoriteWord(Long favoriteId);
+	
+	List<StudentFavoriteWordDTO> getReviewDueWords();
 }

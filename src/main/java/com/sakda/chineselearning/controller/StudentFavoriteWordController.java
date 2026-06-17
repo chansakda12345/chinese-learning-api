@@ -65,13 +65,22 @@ public class StudentFavoriteWordController {
 	    );
 	}
 	
-	@Operation(summary = "Last review of favorite word")
+	@Operation(summary = "Last review of favorite wor")
 	@PostMapping("/{favoriteId}/review")
 	public ResponseEntity<ApiResponse<Void>> reviewFavoriteWord(@PathVariable Long favoriteId) {
 		
 		studentFavoriteWordService.reviewFavoriteWord(favoriteId);
 		
 		return ResponseEntity.ok(new ApiResponse<>(true, "Favorite word reviewed successfully", null));
+	}
+	
+	@Operation(summary = "Get favorite word due reviewd")
+	@GetMapping("/review-due")
+	public ResponseEntity<ApiResponse<List<StudentFavoriteWordDTO>>> getReviewDueWords() {
+		
+		List<StudentFavoriteWordDTO> reviewDueWords = studentFavoriteWordService.getReviewDueWords();
+		
+		return ResponseEntity.ok(new ApiResponse<>(true, "Retrieve favorite word due review sucessfully", reviewDueWords));
 	}
 
 }
