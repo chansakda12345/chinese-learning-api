@@ -2,6 +2,7 @@ package com.sakda.chineselearning.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.dto.SentenceDTO;
+import com.sakda.chineselearning.enums.HskLevel;
 import com.sakda.chineselearning.service.SentenceService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,21 +46,7 @@ public class SentenceController {
 						sentence
 				));
 	}
-	
-	@Operation(summary = "Get all sentences")
-	@GetMapping
-	public ResponseEntity<ApiResponse<List<SentenceDTO>>> getAllSentences() {
-		
-		List<SentenceDTO> allSentences = sentenceService.getAllSentences();
-		
-		return ResponseEntity.ok(
-				new ApiResponse<>(
-						true, 
-						"\"Sentences retrieved successfully", 
-						allSentences
-				));
-	}
-	
+
 	@Operation(summary = "Get sentences by lesson")
 	@GetMapping("lesson/{lessonId}")
 	public ResponseEntity<ApiResponse<List<SentenceDTO>>> getSentencesByLesson(@PathVariable Long lessonId) {
@@ -120,6 +109,29 @@ public class SentenceController {
 	                    true,
 	                    "Sentence deleted successfully",
 	                    null
+	            )
+	    );
+	}
+	
+	@Operation(summary = "Get all sentences with search, pagination and sorting")
+	@GetMapping
+	public ResponseEntity<ApiResponse<Page<SentenceDTO>>> getAll(
+			@RequestParam(required = false) HskLevel level,
+			@RequestParam(required = false) String keyword,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			@RequestParam(defaultValue = "id") String sortBy,
+			@RequestParam(defaultValue = "asc") String sortDir 
+			
+			) {
+		
+		Page<SentenceDTO> sentences = sentenceService.getAll(level, keyword, page, size, sortBy, sortDir);
+		
+		return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "Sentences retrieved successfully",
+	                    sentences
 	            )
 	    );
 	}
