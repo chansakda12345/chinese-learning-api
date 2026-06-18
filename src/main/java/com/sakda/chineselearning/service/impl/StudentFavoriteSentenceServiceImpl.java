@@ -8,12 +8,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.dto.StudentFavoriteSentenceDTO;
+import com.sakda.chineselearning.entity.LearningReminder;
 import com.sakda.chineselearning.entity.Sentence;
 import com.sakda.chineselearning.entity.StudentFavoriteSentence;
 import com.sakda.chineselearning.entity.User;
+import com.sakda.chineselearning.enums.ReminderType;
 import com.sakda.chineselearning.exception.BusinessException;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.mapper.StudentFavoriteSentenceMapper;
+import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.repository.SentenceRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteSentenceRepository;
 import com.sakda.chineselearning.repository.UserRepository;
@@ -30,6 +33,7 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 	private final SentenceRepository sentenceRepository;
 	private final UserRepository userRepository;
 	private final StudentFavoriteSentenceMapper studentFavoriteSentenceMapper;
+	private final LearningReminderRepository learningReminderRepository;
 	
 	@Override
 	@Transactional
@@ -56,6 +60,8 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 		favoriteSentence.setNextReviewAt(nextReviewAt);
 		
 		studentFavoriteSentenceRepository.save(favoriteSentence);
+		
+		createSentenceReminder(user, sentence, nextReviewAt);
 		
 	}
 	
@@ -85,6 +91,12 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 	        throw new BusinessException(
 	                "Favorite sentence does not belong to current user");
 	    }
+	    
+	    learningReminderRepository.deleteByUserAndSentenceAndTypeAndSentFalse(
+	            user,
+	            favoriteSentence.getSentence(),
+	            ReminderType.SENTENCE
+	    );
 
 	    studentFavoriteSentenceRepository.delete(favoriteSentence);
 	}
@@ -119,6 +131,18 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 		favoriteSentence.setNextReviewAt(nextReviewAt);
 		
 		studentFavoriteSentenceRepository.save(favoriteSentence);
+		
+		learningReminderRepository.deleteByUserAndSentenceAndTypeAndSentFalse(
+		        user,
+		        favoriteSentence.getSentence(),
+		        ReminderType.SENTENCE
+		);
+
+		createSentenceReminder(
+		        user,
+		        favoriteSentence.getSentence(),
+		        nextReviewAt
+		);
 	}
 	
 	@Override
@@ -145,6 +169,20 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 	    return userRepository.findByEmail(email)
 	            .orElseThrow(() ->
 	                    new ResourceNotFoundException("User not found"));
+	}
+	
+	private void createSentenceReminder(User user, Sentence sentence, LocalDateTime remindAt) {
+		
+		LearningReminder reminder = new LearningReminder();
+		
+		reminder.setUser(user);
+		reminder.setSentence(sentence);
+		reminder.setType(ReminderType.SENTENCE);
+		reminder.setSent(false);
+		reminder.setCreatedAt(LocalDateTime.now());
+		reminder.setRemindAt(remindAt);
+		
+		learningReminderRepository.save(reminder);
 	}
 	
 	private LocalDateTime calculateNextReviewAt(LocalDateTime now, int reviewCount) {

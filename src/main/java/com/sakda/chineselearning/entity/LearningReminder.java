@@ -40,5 +40,9 @@ public class LearningReminder {
 	@ManyToOne
 	@JoinColumn(name = "word_id")
 	private Word word;
+	
+	@ManyToOne
+	@JoinColumn(name = "sentence_id")
+	private Sentence sentence;
 
 }
