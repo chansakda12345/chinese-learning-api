@@ -19,5 +19,17 @@ public interface StudentFavoriteSentenceRepository extends JpaRepository<Student
             User user,
             LocalDateTime now
     );
+	
+	long countByUserAndNextReviewAtLessThanEqual(User user, LocalDateTime now);
+	
+	long countByUser(User user);
+	
+	long countByUserAndLastReviewedAtIsNull(User user);
+	
+	long countByUserAndLastReviewedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+	
+	List<StudentFavoriteSentence> findByUserAndLastReviewedAtIsNotNullOrderByLastReviewedAtDesc(
+	        User user
+	);
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sakda.chineselearning.dto.ApiResponse;
+import com.sakda.chineselearning.dto.LearningAnalyticsDTO;
 import com.sakda.chineselearning.dto.ReviewStatsDTO;
 import com.sakda.chineselearning.service.DashboardService;
 
@@ -34,6 +35,21 @@ public class DashboardController {
 						reviewStats
 						)
 				);
+	}
+	
+	@Operation(summary = "Get learning analytics")
+	@GetMapping("/analytics")
+	public ResponseEntity<ApiResponse<LearningAnalyticsDTO>> getAnalytics() {
+		
+		LearningAnalyticsDTO analyticsDTO = dashboardService.getAnalytics();
+		
+		return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "Learning analytics retrieved successfully",
+	                    analyticsDTO
+	            )
+	    );
 	}
 
 }

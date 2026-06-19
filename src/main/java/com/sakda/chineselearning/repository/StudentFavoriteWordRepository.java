@@ -24,5 +24,9 @@ public interface StudentFavoriteWordRepository extends JpaRepository<StudentFavo
 	long countByUserAndNextReviewAtLessThanEqual(User user, LocalDateTime now);
 	
 	long countByUserAndLastReviewedAtBetween(User user, LocalDateTime start, LocalDateTime end);
+	
+	List<StudentFavoriteWord> findByUserAndLastReviewedAtIsNotNullOrderByLastReviewedAtDesc(
+	        User user
+	);
 
 }
