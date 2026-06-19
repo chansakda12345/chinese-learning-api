@@ -27,5 +27,7 @@ public interface SentenceService {
             String sortBy,
             String sortDir
     );
+	
+	SentenceDTO getRandomSentence();
 
 }

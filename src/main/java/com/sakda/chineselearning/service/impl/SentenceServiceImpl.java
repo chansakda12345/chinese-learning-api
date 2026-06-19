@@ -1,6 +1,7 @@
 package com.sakda.chineselearning.service.impl;
 
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -129,6 +130,23 @@ public class SentenceServiceImpl implements SentenceService {
 		
 		return sentenceRepository.findByLevelAndChineseContainingIgnoreCase(level, keyword, pageable)
 				.map(sentenceMapper::toSentenceDTO);
+	}
+
+	@Override
+	public SentenceDTO getRandomSentence() {
+		
+		List<Sentence> sentences = sentenceRepository.findAll();
+		
+		if (sentences.isEmpty()) {
+	        throw new ResourceNotFoundException(
+	                "No sentences found");
+	    }
+		
+		Random random = new Random();
+		
+		Sentence sentence = sentences.get(random.nextInt(sentences.size()));
+		
+		return sentenceMapper.toSentenceDTO(sentence);
 	}
 
 }

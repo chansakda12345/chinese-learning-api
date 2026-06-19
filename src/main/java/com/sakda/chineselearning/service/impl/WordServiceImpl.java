@@ -1,5 +1,8 @@
 package com.sakda.chineselearning.service.impl;
 
+import java.util.List;
+import java.util.Random;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -128,6 +131,23 @@ public class WordServiceImpl implements WordService {
 		Word savedWord = wordRepository.save(word);
 		
 		return wordMapper.toWordDTO(savedWord);
+	}
+
+	@Override
+	public WordDTO getRandomWord() {
+		
+		List<Word> words = wordRepository.findAll();
+		
+		if (words.isEmpty()) {
+	        throw new ResourceNotFoundException(
+	                "No words found");
+	    }
+		
+		Random random = new Random();
+		
+		Word randomWord = words.get(random.nextInt(words.size()));
+		
+		return wordMapper.toWordDTO(randomWord);
 	}
 
 }

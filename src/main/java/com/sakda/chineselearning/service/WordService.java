@@ -26,4 +26,6 @@ public interface WordService {
     WordDTO assignLesson(Long wordId, Long lessonId);
     
     WordDTO uploadAudio(Long wordId, MultipartFile file);
+    
+    WordDTO getRandomWord();
 }
