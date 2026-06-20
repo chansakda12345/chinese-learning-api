@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.sakda.chineselearning.entity.StudentFavoriteWord;
 import com.sakda.chineselearning.entity.User;
 import com.sakda.chineselearning.entity.Word;
+import com.sakda.chineselearning.enums.HskLevel;
 
 public interface StudentFavoriteWordRepository extends JpaRepository<StudentFavoriteWord, Long>{
 	
@@ -28,5 +29,7 @@ public interface StudentFavoriteWordRepository extends JpaRepository<StudentFavo
 	List<StudentFavoriteWord> findByUserAndLastReviewedAtIsNotNullOrderByLastReviewedAtDesc(
 	        User user
 	);
+	
+	long countByUserAndWord_LevelAndReviewCountGreaterThan(User user, HskLevel level, Integer reviewCount);
 
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.dto.DashboardDTO;
+import com.sakda.chineselearning.dto.HskProgressDTO;
+import com.sakda.chineselearning.dto.HskRecommendationDTO;
 import com.sakda.chineselearning.dto.ProgressDTO;
 import com.sakda.chineselearning.service.StudentProgressService;
 
@@ -18,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @Tag(
 	    name = "Progress API",
-	    description = "Track student learning progress and dashboard statistics"
+	    description = "Track student progress, analytics, and HSK learning path"
 	)
 @RestController
 @RequestMapping("/api/v1/progress")
@@ -35,7 +37,7 @@ public class StudentProgressController {
 		return ResponseEntity.ok(
 				new ApiResponse<>(
 						true,
-						"Progress retrieved sucessfully",
+						"Progress retrieved successfully",
 						progresses
 						)
 				);
@@ -51,6 +53,37 @@ public class StudentProgressController {
 	                    true,
 	                    "Dashboard retrieved successfully",
 	                    dashboard
+	            )
+	    );
+	}
+	
+	@Operation(summary = "Get HSK progress")
+	@GetMapping("/hsk")
+	public ResponseEntity<ApiResponse<List<HskProgressDTO>>> getHskProgress() {
+
+	    List<HskProgressDTO> progress = studentProgressService.getHskProgress();
+
+	    return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "HSK progress retrieved successfully",
+	                    progress
+	            )
+	    );
+	}
+
+	@Operation(summary = "Get HSK recommendation")
+	@GetMapping("/recommendation")
+	public ResponseEntity<ApiResponse<HskRecommendationDTO>> getRecommendation() {
+
+	    HskRecommendationDTO recommendation =
+	    		studentProgressService.getRecommendation();
+
+	    return ResponseEntity.ok(
+	            new ApiResponse<>(
+	                    true,
+	                    "HSK recommendation retrieved successfully",
+	                    recommendation
 	            )
 	    );
 	}

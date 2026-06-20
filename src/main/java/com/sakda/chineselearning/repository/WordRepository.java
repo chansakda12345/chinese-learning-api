@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.sakda.chineselearning.entity.Word;
+import com.sakda.chineselearning.enums.HskLevel;
+
 
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long>{
@@ -17,4 +19,6 @@ public interface WordRepository extends JpaRepository<Word, Long>{
             String khmer,
             Pageable pageable
     );
+	
+	long countByLevel(HskLevel level);
 }
