@@ -1,0 +1,30 @@
+package com.sakda.chineselearning.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Entity
+@Table(name = "mock_exam_questions")
+@Data
+public class MockExamQuestion {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Integer points;
+
+    @ManyToOne
+    @JoinColumn(name = "mock_exam_id")
+    private MockExam mockExam;
+
+    @ManyToOne
+    @JoinColumn(name = "question_id")
+    private Question question;
+}
