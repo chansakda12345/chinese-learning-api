@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sakda.chineselearning.entity.Sentence;
 import com.sakda.chineselearning.entity.StudentFavoriteSentence;
@@ -28,8 +30,9 @@ public interface StudentFavoriteSentenceRepository extends JpaRepository<Student
 	
 	long countByUserAndLastReviewedAtBetween(User user, LocalDateTime start, LocalDateTime end);
 	
-	List<StudentFavoriteSentence> findByUserAndLastReviewedAtIsNotNullOrderByLastReviewedAtDesc(
-	        User user
-	);
+	List<StudentFavoriteSentence> findByUserAndLastReviewedAtIsNotNullOrderByLastReviewedAtDesc(User user);
+	
+	@Query("SELECT COALESCE(SUM(f.reviewCount), 0) FROM StudentFavoriteSentence f WHERE f.user = :user")
+	Long sumReviewCountByUser(@Param("user") User user);
 
 }

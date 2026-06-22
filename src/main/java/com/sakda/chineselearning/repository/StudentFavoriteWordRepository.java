@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.sakda.chineselearning.entity.StudentFavoriteWord;
 import com.sakda.chineselearning.entity.User;
@@ -31,5 +33,8 @@ public interface StudentFavoriteWordRepository extends JpaRepository<StudentFavo
 	);
 	
 	long countByUserAndWord_LevelAndReviewCountGreaterThan(User user, HskLevel level, Integer reviewCount);
+	
+	@Query("SELECT COALESCE(SUM(f.reviewCount), 0) FROM StudentFavoriteWord f WHERE f.user = :user")
+	Long sumReviewCountByUser(@Param("user") User user);
 
 }
