@@ -10,12 +10,14 @@ import com.sakda.chineselearning.dto.WordDTO;
 import com.sakda.chineselearning.entity.StudentFavoriteSentence;
 import com.sakda.chineselearning.entity.StudentFavoriteWord;
 import com.sakda.chineselearning.entity.User;
+import com.sakda.chineselearning.enums.HskLevel;
 import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.repository.StudentFavoriteSentenceRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteWordRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.service.SentenceService;
 import com.sakda.chineselearning.service.TelegramCommandService;
+import com.sakda.chineselearning.service.TelegramQuizService;
 import com.sakda.chineselearning.service.TelegramService;
 import com.sakda.chineselearning.service.WordService;
 
@@ -32,10 +34,23 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
 	private final UserRepository userRepository;
 	private final StudentFavoriteWordRepository studentFavoriteWordRepository;
 	private final StudentFavoriteSentenceRepository studentFavoriteSentenceRepository;
+	private final TelegramQuizService telegramQuizService;
 	
 	@Override
 	public void handleCommand(String chatId, String command) {
-		switch (command) {
+		
+		String normalizedCommand = command.trim();
+		
+		if (normalizedCommand.equalsIgnoreCase("A")
+		        || normalizedCommand.equalsIgnoreCase("B")
+		        || normalizedCommand.equalsIgnoreCase("C")
+		        || normalizedCommand.equalsIgnoreCase("D")) {
+
+		    telegramQuizService.checkAnswer(chatId, normalizedCommand);
+		    return;
+		}
+		
+		switch (normalizedCommand) {
 
 		case "/start":
 			telegramService.sendMessage(chatId, getStartMessage());
@@ -56,6 +71,22 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
 		case "/review":
 			telegramService.sendMessage(chatId, getReviewMessage(chatId));
 			break;
+			
+		case "/quiz":
+			telegramQuizService.sendRandomQuiz(chatId);
+			break;
+			
+		case "/hsk1quiz":
+		    telegramQuizService.sendHskQuiz(chatId, HskLevel.HSK1);
+		    break;
+
+		case "/hsk2quiz":
+		    telegramQuizService.sendHskQuiz(chatId, HskLevel.HSK2);
+		    break;
+
+		case "/hsk3quiz":
+		    telegramQuizService.sendHskQuiz(chatId, HskLevel.HSK3);
+		    break;
 
 		default:
 			telegramService.sendMessage(chatId, "Unknown command. Type /help");
@@ -72,6 +103,10 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
                 /word
                 /sentence
                 /review
+				/quiz
+				/hsk1quiz
+				/hsk2quiz
+				/hsk3quiz
                 /help
                 """;
 	}
@@ -87,7 +122,19 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
                 Get random sentence
 
                 /review
-                Get review due items
+				Get review due items
+
+				/quiz
+				Get random quiz question
+
+				/hsk1quiz
+				Get random HSK1 quiz
+
+				/hsk2quiz
+				Get random HSK2 quiz
+
+				/hsk3quiz
+				Get random HSK3 quiz
 
                 /help
                 Show commands
