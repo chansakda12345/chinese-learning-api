@@ -14,9 +14,11 @@ import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.repository.QuestionRepository;
 import com.sakda.chineselearning.repository.TelegramQuizSessionRepository;
 import com.sakda.chineselearning.repository.UserRepository;
+import com.sakda.chineselearning.service.AchievementService;
 import com.sakda.chineselearning.service.TelegramQuizService;
 import com.sakda.chineselearning.service.TelegramService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,6 +29,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
     private final TelegramQuizSessionRepository telegramQuizSessionRepository;
     private final QuestionRepository questionRepository;
     private final TelegramService telegramService;
+    private final AchievementService achievementService;
 
     @Override
     public void sendRandomQuiz(String chatId) {
@@ -54,6 +57,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
     }
 
     @Override
+    @Transactional
     public void checkAnswer(String chatId, String answer) {
 
         User user = findUserByChatId(chatId);
@@ -77,6 +81,8 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
 
         session.setAnswered(true);
         telegramQuizSessionRepository.save(session);
+        
+        achievementService.checkQuizAchievements(user);
 
         Question question = session.getQuestion();
 

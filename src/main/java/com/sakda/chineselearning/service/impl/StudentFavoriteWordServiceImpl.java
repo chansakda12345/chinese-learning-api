@@ -20,6 +20,7 @@ import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteWordRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.repository.WordRepository;
+import com.sakda.chineselearning.service.AchievementService;
 import com.sakda.chineselearning.service.StudentFavoriteWordService;
 
 import jakarta.transaction.Transactional;
@@ -35,6 +36,7 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	private final UserRepository userRepository;
 	private final StudentFavoriteWordMapper studentFavoriteWordMapper;
 	private final LearningReminderRepository learningReminderRepository;
+	private final AchievementService achievementService;
 	
 	@Transactional
 	@Override
@@ -61,6 +63,7 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	    favorite.setNextReviewAt(nextReviewAt);
 
 	    studentFavoriteWordRepository.save(favorite);
+	    achievementService.checkWordAchievements(user);
 
 	    createWordReminder(user, word, nextReviewAt);		
 	}
@@ -125,6 +128,8 @@ public class StudentFavoriteWordServiceImpl implements StudentFavoriteWordServic
 	    favoriteWord.setNextReviewAt(nextReviewAt);
 
 	    studentFavoriteWordRepository.save(favoriteWord);
+	    
+	    achievementService.checkReviewAchievements(user);
 	    
 	    learningReminderRepository.deleteByUserAndWordAndTypeAndSentFalse(user, favoriteWord.getWord(), ReminderType.WORD);
 	    

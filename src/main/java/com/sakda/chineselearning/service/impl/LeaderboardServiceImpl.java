@@ -47,7 +47,7 @@ public class LeaderboardServiceImpl implements LeaderboardService {
 					+ studentFavoriteWordRepository.sumReviewCountByUser(user);
 			
 			Integer totalQuizScore = studentProgressRepository.sumScoreByUser(user);
-			
+
 			Integer totalExamScore = calculateTotalExamScore(user);
 			
 			Long totalPoints = totalReviews + totalQuizScore.longValue() + totalExamScore.longValue();

@@ -20,6 +20,7 @@ import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.repository.SentenceRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteSentenceRepository;
 import com.sakda.chineselearning.repository.UserRepository;
+import com.sakda.chineselearning.service.AchievementService;
 import com.sakda.chineselearning.service.StudentFavoriteSentenceService;
 
 import jakarta.transaction.Transactional;
@@ -34,6 +35,7 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 	private final UserRepository userRepository;
 	private final StudentFavoriteSentenceMapper studentFavoriteSentenceMapper;
 	private final LearningReminderRepository learningReminderRepository;
+	private final AchievementService achievementService;
 	
 	@Override
 	@Transactional
@@ -60,6 +62,8 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 		favoriteSentence.setNextReviewAt(nextReviewAt);
 		
 		studentFavoriteSentenceRepository.save(favoriteSentence);
+		
+		achievementService.checkSentenceAchievements(user);
 		
 		createSentenceReminder(user, sentence, nextReviewAt);
 		
@@ -131,6 +135,8 @@ public class StudentFavoriteSentenceServiceImpl implements StudentFavoriteSenten
 		favoriteSentence.setNextReviewAt(nextReviewAt);
 		
 		studentFavoriteSentenceRepository.save(favoriteSentence);
+		
+		achievementService.checkReviewAchievements(user);
 		
 		learningReminderRepository.deleteByUserAndSentenceAndTypeAndSentFalse(
 		        user,
