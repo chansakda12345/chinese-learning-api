@@ -219,4 +219,45 @@ public class MockExamServiceImpl implements MockExamService {
 
 	}
 
+	@Override
+	public MockExam getExamById(Long id) {
+		return mockExamRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Mock exam not found with id: " + id));
+	}
+
+	@Override
+	public MockExam updateExam(Long id, MockExam mockExam) {
+		
+		MockExam existingExam = mockExamRepository.findById(id)
+									.orElseThrow(() -> new ResourceNotFoundException("Mock exam not found with id: " + id));
+		
+		existingExam.setTitle(mockExam.getTitle());
+		existingExam.setLevel(mockExam.getLevel());
+		existingExam.setDurationMinutes(mockExam.getDurationMinutes());
+		existingExam.setPassingScore(mockExam.getPassingScore());
+		
+		return mockExamRepository.save(existingExam);
+	}
+
+	@Override
+	public MockExam updatePassingScore(Long id, Integer passingScore) {
+		
+		MockExam existingExam = mockExamRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Mock exam not found with id: " + id));
+		
+		existingExam.setPassingScore(passingScore);
+		
+		return mockExamRepository.save(existingExam);
+	}
+
+	@Override
+	public void deleteExam(Long id) {
+		
+		MockExam existingExam = mockExamRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Mock exam not found with id: " + id));
+		
+		mockExamRepository.delete(existingExam);
+		
+	}
+
 }

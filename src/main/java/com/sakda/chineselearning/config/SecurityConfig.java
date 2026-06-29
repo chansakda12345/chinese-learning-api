@@ -21,45 +21,51 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public APIs
                         .requestMatchers(
                                 "/api/v1/auth/register",
-                                "/api/v1/auth/login"
-                        ).permitAll()
-                        
-                        .requestMatchers(
-                        		HttpMethod.GET,
-                        		"/api/v1/words/**",
-                        		"/api/v1/lessons/**"
-                        ).permitAll()
-                        
-                        .requestMatchers(
-                        		"/api/v1/auth/register",
                                 "/api/v1/auth/login",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
-                        
+
+                        // Public Read APIs
                         .requestMatchers(
-                        		HttpMethod.POST,
-                        		"/api/v1/words/**",
-                        		"/api/v1/lessons/**"
+                                HttpMethod.GET,
+                                "/api/v1/words/**",
+                                "/api/v1/lessons/**"
+                        ).permitAll()
+
+                        // Admin CMS
+                        .requestMatchers("/api/v1/admin/**")
+                        .hasRole("ADMIN")
+
+                        // Admin Word & Lesson Management
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/words/**",
+                                "/api/v1/lessons/**"
                         ).hasRole("ADMIN")
-                        
+
                         .requestMatchers(
-                        		HttpMethod.PUT,
-                        		"/api/v1/words/**",
-                        		"/api/v1/lessons/**"
-                         ).hasRole("ADMIN")
-                        
+                                HttpMethod.PUT,
+                                "/api/v1/words/**",
+                                "/api/v1/lessons/**"
+                        ).hasRole("ADMIN")
+
                         .requestMatchers(
-                        		HttpMethod.DELETE,
-                        		"/api/v1/words/**",
-                        		"/api/v1/lessons/**"
-                         ).hasRole("ADMIN")
-                        
+                                HttpMethod.DELETE,
+                                "/api/v1/words/**",
+                                "/api/v1/lessons/**"
+                        ).hasRole("ADMIN")
+
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(

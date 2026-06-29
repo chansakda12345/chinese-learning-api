@@ -28,4 +28,13 @@ public interface MockExamService {
     );
 
     List<ExamHistoryDTO> getExamHistory();
+    
+    MockExam getExamById(Long id);
+    
+    MockExam updateExam(Long id, MockExam mockExam);
+    
+    MockExam updatePassingScore(Long id, Integer passingScore);
+    
+    void deleteExam(Long id);
+    
 }

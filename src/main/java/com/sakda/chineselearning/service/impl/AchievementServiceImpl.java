@@ -433,4 +433,56 @@ public class AchievementServiceImpl implements AchievementService {
 	            .count();
 	}
 
+	@Override
+	public AchievementDTO getAchievementById(Long id) {
+
+	    Achievement achievement = achievementRepository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Achievement not found with id: " + id));
+
+	    return achievementMapper.toDTO(achievement);
+	}
+
+	@Override
+	public void deleteAchievement(Long id) {
+
+	    Achievement achievement = achievementRepository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Achievement not found with id: " + id));
+
+	    achievementRepository.delete(achievement);
+	}
+
+	@Override
+	public AchievementDTO activateAchievement(Long id) {
+
+	    Achievement achievement = achievementRepository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Achievement not found with id: " + id));
+
+	    achievement.setActive(true);
+
+	    Achievement savedAchievement = achievementRepository.save(achievement);
+
+	    return achievementMapper.toDTO(savedAchievement);
+	}
+
+	@Override
+	public AchievementDTO deactivateAchievement(Long id) {
+
+	    Achievement achievement = achievementRepository.findById(id)
+	            .orElseThrow(() ->
+	                    new ResourceNotFoundException(
+	                            "Achievement not found with id: " + id));
+
+	    achievement.setActive(false);
+
+	    Achievement savedAchievement = achievementRepository.save(achievement);
+
+	    return achievementMapper.toDTO(savedAchievement);
+	}
+
 }

@@ -29,6 +29,8 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 	
+	private Boolean enabled = true;
+	
 	private String telegramChatId;
 
 }

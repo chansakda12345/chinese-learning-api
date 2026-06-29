@@ -2,6 +2,7 @@ package com.sakda.chineselearning.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -32,5 +33,11 @@ public interface LearningReminderRepository extends JpaRepository<LearningRemind
 	        Sentence sentence,
 	        ReminderType type
 	);
+	
+	Long countByUserAndSentFalse(User user);
+
+	Long countByUserAndSentTrue(User user);
+
+	Optional<LearningReminder> findFirstByUserAndSentFalseOrderByRemindAtAsc(User user);
 
 }

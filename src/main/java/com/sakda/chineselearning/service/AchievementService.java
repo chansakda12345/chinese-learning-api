@@ -32,4 +32,12 @@ public interface AchievementService {
     void checkExamAchievements(User user);
 
     void awardAchievement(User user, Achievement achievement);
+    
+    AchievementDTO getAchievementById(Long id);
+    
+    void deleteAchievement(Long id);
+    
+    AchievementDTO activateAchievement(Long id);
+    
+    AchievementDTO deactivateAchievement(Long id);
 }
