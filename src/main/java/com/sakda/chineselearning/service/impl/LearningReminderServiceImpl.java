@@ -9,7 +9,7 @@ import com.sakda.chineselearning.entity.LearningReminder;
 import com.sakda.chineselearning.enums.ReminderType;
 import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.service.LearningReminderService;
-import com.sakda.chineselearning.service.TelegramService;
+import com.sakda.chineselearning.service.TelegramMessageService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class LearningReminderServiceImpl implements LearningReminderService {	
 	
 	private final LearningReminderRepository learningReminderRepository;
-	private final TelegramService telegramService;
+	private final TelegramMessageService telegramService;
 	
 	@Transactional
 	@Override

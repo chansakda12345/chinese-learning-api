@@ -1,4 +1,4 @@
-package com.sakda.chineselearning.service.impl;
+package com.sakda.chineselearning.telegram.service.impl;
 
 import java.util.List;
 import java.util.Random;
@@ -15,8 +15,9 @@ import com.sakda.chineselearning.repository.QuestionRepository;
 import com.sakda.chineselearning.repository.TelegramQuizSessionRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.service.AchievementService;
-import com.sakda.chineselearning.service.TelegramQuizService;
-import com.sakda.chineselearning.service.TelegramService;
+import com.sakda.chineselearning.service.TelegramMessageService;
+import com.sakda.chineselearning.telegram.message.QuizMessageBuilder;
+import com.sakda.chineselearning.telegram.service.TelegramQuizService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,9 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
     private final UserRepository userRepository;
     private final TelegramQuizSessionRepository telegramQuizSessionRepository;
     private final QuestionRepository questionRepository;
-    private final TelegramService telegramService;
+    private final TelegramMessageService telegramMessageService;
     private final AchievementService achievementService;
+    private final QuizMessageBuilder quizMessageBuilder;
 
     @Override
     public void sendRandomQuiz(String chatId) {
@@ -68,7 +70,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
                         .orElse(null);
 
         if (session == null) {
-            telegramService.sendMessage(
+            telegramMessageService.sendMessage(
                     chatId,
                     "No active quiz. Type /quiz to start."
             );
@@ -81,51 +83,37 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
 
         session.setAnswered(true);
         telegramQuizSessionRepository.save(session);
-        
+
         achievementService.checkQuizAchievements(user);
 
         Question question = session.getQuestion();
 
         if (question == null) {
-            telegramService.sendMessage(
+            telegramMessageService.sendMessage(
                     chatId,
                     "This quiz question is no longer available. Type /quiz to try again."
             );
             return;
         }
+        
+        String correctAnswerText =
+                findOptionTextByLetter(question, session.getCorrectAnswer());
 
         if (correct) {
-            telegramService.sendMessage(
-                    chatId,
-                    """
-                    ✅ Correct!
-
-                    Question:
-                    %s
-
-                    Correct Answer:
-                    %s
-                    """
-                    .formatted(
-                            question.getQuestionText(),
-                            session.getCorrectAnswer()
-                    )
+            telegramMessageService.sendMessage(
+            		chatId,
+            		quizMessageBuilder.buildCorrectAnswerMessage(
+            				question, 
+            				session.getCorrectAnswer(),
+            				correctAnswerText)
             );
         } else {
-            telegramService.sendMessage(
+        	telegramMessageService.sendMessage(
                     chatId,
-                    """
-                    ❌ Incorrect
-
-                    Correct Answer:
-                    %s
-
-                    Question:
-                    %s
-                    """
-                    .formatted(
+                    quizMessageBuilder.buildIncorrectAnswerMessage(
+                            question,
                             session.getCorrectAnswer(),
-                            question.getQuestionText()
+                            correctAnswerText
                     )
             );
         }
@@ -143,7 +131,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
                 .findFirstByUserAndAnsweredFalseOrderByCreatedAtDesc(user)
                 .isPresent()) {
 
-            telegramService.sendMessage(
+            telegramMessageService.sendMessage(
                     chatId,
                     "Please answer your current quiz first."
             );
@@ -151,7 +139,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
         }
 
         if (questions.isEmpty()) {
-            telegramService.sendMessage(chatId, emptyMessage);
+            telegramMessageService.sendMessage(chatId, emptyMessage);
             return;
         }
 
@@ -163,28 +151,17 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
         List<Option> options = question.getOptions();
 
         if (options == null || options.isEmpty()) {
-            telegramService.sendMessage(
+            telegramMessageService.sendMessage(
                     chatId,
                     "This question has no options. Please try again later."
             );
             return;
         }
 
-        StringBuilder message = new StringBuilder();
-
-        message.append("📝 Quiz Time!\n\n");
-        message.append("Question:\n");
-        message.append(question.getQuestionText()).append("\n\n");
-
         char letter = 'A';
         String correctLetter = null;
 
         for (Option option : options) {
-
-            message.append(letter)
-                    .append(". ")
-                    .append(option.getOptionText())
-                    .append("\n");
 
             if (option.getOptionText()
                     .equalsIgnoreCase(question.getCorrectAnswer())) {
@@ -196,7 +173,7 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
         }
 
         if (correctLetter == null) {
-            telegramService.sendMessage(
+            telegramMessageService.sendMessage(
                     chatId,
                     "This question has no valid correct answer. Please try again later."
             );
@@ -212,9 +189,9 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
 
         telegramQuizSessionRepository.save(session);
 
-        message.append("\nReply with A, B, C, or D");
+        String message = quizMessageBuilder.buildQuizMessage(question, options);
 
-        telegramService.sendMessage(chatId, message.toString());
+        telegramMessageService.sendMessage(chatId, message);
     }
 
     private User findUserByChatId(String chatId) {
@@ -222,5 +199,26 @@ public class TelegramQuizServiceImpl implements TelegramQuizService {
         return userRepository.findByTelegramChatId(chatId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "User not found with telegram chat id: " + chatId));
+    }
+    
+    private String findOptionTextByLetter(Question question, String letter) {
+    	
+    	if (question.getOptions() == null || letter == null) {
+    		return "";
+    	}
+    	
+    	char targetLetter = letter.trim().toUpperCase().charAt(0);
+    	char currentLetter = 'A';
+    	
+    	for (Option option : question.getOptions()) {
+    		
+    		if (currentLetter == targetLetter) {
+    			return option.getOptionText();
+    		}
+    		
+    		currentLetter++;
+    	}
+    	
+    	return "";
     }
 }

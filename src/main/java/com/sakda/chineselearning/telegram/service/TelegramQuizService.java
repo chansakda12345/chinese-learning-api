@@ -1,4 +1,4 @@
-package com.sakda.chineselearning.service;
+package com.sakda.chineselearning.telegram.service;
 
 import com.sakda.chineselearning.enums.HskLevel;
 

@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.sakda.chineselearning.dto.TelegramMessageRequest;
-import com.sakda.chineselearning.service.TelegramService;
+import com.sakda.chineselearning.service.TelegramMessageService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TelegramServiceImpl implements TelegramService{
+public class TelegramMessageServiceImpl implements TelegramMessageService{
 	
 	@Value("${telegram.bot-token}")
 	private String botToken;

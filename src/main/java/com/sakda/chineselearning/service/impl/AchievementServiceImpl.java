@@ -29,7 +29,7 @@ import com.sakda.chineselearning.repository.TelegramQuizSessionRepository;
 import com.sakda.chineselearning.repository.UserAchievementRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.service.AchievementService;
-import com.sakda.chineselearning.service.TelegramService;
+import com.sakda.chineselearning.service.TelegramMessageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +41,7 @@ public class AchievementServiceImpl implements AchievementService {
 
 	private final UserAchievementRepository userAchievementRepository;
 
-	private final TelegramService telegramService;
+	private final TelegramMessageService telegramService;
 
 	private final AchievementRepository achievementRepository;
 
