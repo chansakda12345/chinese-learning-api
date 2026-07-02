@@ -1,4 +1,4 @@
-package com.sakda.chineselearning.controller;
+package com.sakda.chineselearning.telegram.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sakda.chineselearning.dto.telegram.TelegramUpdate;
-import com.sakda.chineselearning.service.TelegramCommandService;
+import com.sakda.chineselearning.telegram.service.TelegramCommandService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

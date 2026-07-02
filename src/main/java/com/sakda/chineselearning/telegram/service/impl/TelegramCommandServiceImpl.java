@@ -1,10 +1,11 @@
-package com.sakda.chineselearning.service.impl;
+package com.sakda.chineselearning.telegram.service.impl;
 
 import org.springframework.stereotype.Service;
 
 import com.sakda.chineselearning.enums.HskLevel;
-import com.sakda.chineselearning.service.TelegramCommandService;
+import com.sakda.chineselearning.telegram.service.TelegramCommandService;
 import com.sakda.chineselearning.telegram.service.TelegramInformationService;
+import com.sakda.chineselearning.telegram.service.TelegramLinkService;
 import com.sakda.chineselearning.telegram.service.TelegramQuizService;
 import com.sakda.chineselearning.telegram.service.TelegramReviewService;
 import com.sakda.chineselearning.telegram.service.TelegramTeacherService;
@@ -19,6 +20,7 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
 	private final TelegramReviewService telegramReviewService;
 	private final TelegramTeacherService telegramTeacherService;
 	private final TelegramInformationService telegramInformationService;
+	private final TelegramLinkService telegramLinkService;
 	
 	@Override
 	public void handleCommand(String chatId, String command) {
@@ -31,6 +33,15 @@ public class TelegramCommandServiceImpl implements TelegramCommandService {
 		        || normalizedCommand.equalsIgnoreCase("D")) {
 
 		    telegramQuizService.checkAnswer(chatId, normalizedCommand);
+		    return;
+		}
+		
+		if (normalizedCommand.toLowerCase().startsWith("/link ")) {
+			
+			String code = normalizedCommand.substring(6).trim();
+			
+			telegramLinkService.sendLinkResultMessage(chatId, code);
+
 		    return;
 		}
 		

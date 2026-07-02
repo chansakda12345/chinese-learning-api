@@ -1,5 +1,7 @@
 package com.sakda.chineselearning.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,6 +33,17 @@ public class User {
 	
 	private Boolean enabled = true;
 	
+	@Column(unique = true)
 	private String telegramChatId;
+	
+	@Column(unique = true)
+	private String telegramUsername;
+	
+	private String telegramFirstName;
+	
+	private LocalDateTime telegramLinkedAt;
+	
+	@Column(nullable = false)
+	private Boolean telegramVerified = false;
 
 }
