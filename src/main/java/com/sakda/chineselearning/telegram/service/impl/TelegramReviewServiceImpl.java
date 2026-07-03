@@ -12,8 +12,8 @@ import com.sakda.chineselearning.exception.ResourceNotFoundException;
 import com.sakda.chineselearning.repository.StudentFavoriteSentenceRepository;
 import com.sakda.chineselearning.repository.StudentFavoriteWordRepository;
 import com.sakda.chineselearning.repository.UserRepository;
-import com.sakda.chineselearning.service.TelegramMessageService;
 import com.sakda.chineselearning.telegram.message.ReviewMessageBuilder;
+import com.sakda.chineselearning.telegram.service.TelegramMessageService;
 import com.sakda.chineselearning.telegram.service.TelegramReviewService;
 
 import lombok.RequiredArgsConstructor;

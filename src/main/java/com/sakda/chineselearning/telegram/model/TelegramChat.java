@@ -1,4 +1,4 @@
-package com.sakda.chineselearning.dto.telegram;
+package com.sakda.chineselearning.telegram.model;
 
 import lombok.Data;
 

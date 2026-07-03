@@ -9,7 +9,7 @@ import com.sakda.chineselearning.entity.LearningReminder;
 import com.sakda.chineselearning.enums.ReminderType;
 import com.sakda.chineselearning.repository.LearningReminderRepository;
 import com.sakda.chineselearning.service.LearningReminderService;
-import com.sakda.chineselearning.service.TelegramMessageService;
+import com.sakda.chineselearning.telegram.service.TelegramMessageService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

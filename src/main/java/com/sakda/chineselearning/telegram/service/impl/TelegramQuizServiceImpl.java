@@ -15,8 +15,8 @@ import com.sakda.chineselearning.repository.QuestionRepository;
 import com.sakda.chineselearning.repository.TelegramQuizSessionRepository;
 import com.sakda.chineselearning.repository.UserRepository;
 import com.sakda.chineselearning.service.AchievementService;
-import com.sakda.chineselearning.service.TelegramMessageService;
 import com.sakda.chineselearning.telegram.message.QuizMessageBuilder;
+import com.sakda.chineselearning.telegram.service.TelegramMessageService;
 import com.sakda.chineselearning.telegram.service.TelegramQuizService;
 
 import jakarta.transaction.Transactional;

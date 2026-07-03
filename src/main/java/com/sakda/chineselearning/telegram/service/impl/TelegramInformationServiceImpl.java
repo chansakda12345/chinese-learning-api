@@ -2,9 +2,9 @@ package com.sakda.chineselearning.telegram.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.sakda.chineselearning.service.TelegramMessageService;
 import com.sakda.chineselearning.telegram.message.InformationMessageBuilder;
 import com.sakda.chineselearning.telegram.service.TelegramInformationService;
+import com.sakda.chineselearning.telegram.service.TelegramMessageService;
 
 import lombok.RequiredArgsConstructor;
 
