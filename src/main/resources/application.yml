@@ -24,5 +24,10 @@ app:
   image-dir: uploads/images
 telegram:
  bot-token: 8933476984:AAF2FmUwXfCx4LhqaCoiEjE0mQj_HE4oxTU
- channel-id: "@studifypublicchannel"
- group-id: "-1004410977989"
+ public-channel-id: "@studifypublicchannel"
+ premium-channel-id: '-1003912067074'
+ 
+ admin-contact: '@SAKDA_chan'
+ public-channel-link: "https://t.me/studifypublicchannel"
+ premium-channel-link: "https://t.me/+Z1tH3u_7U-c1YWZl"
+ 

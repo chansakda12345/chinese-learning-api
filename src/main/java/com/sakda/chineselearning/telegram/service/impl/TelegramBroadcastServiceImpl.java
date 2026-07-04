@@ -25,11 +25,11 @@ public class TelegramBroadcastServiceImpl implements TelegramBroadcastService {
 	private final TelegramPostRepository telegramPostRepository;
 	private final TelegramMessageService telegramMessageService;
 	
-	@Value("${telegram.channel-id}")
-	private String channelId;
+	@Value("${telegram.public-channel-id}")
+	private String publicChannelId;
 	
-	@Value("${telegram.group-id}")
-	private String groupId;
+	@Value("${telegram.premium-channel-id}")
+	private String premiumChannelId;
 
 	@Override
 	@Transactional
@@ -39,9 +39,9 @@ public class TelegramBroadcastServiceImpl implements TelegramBroadcastService {
 		String targetChatId = null;
 		
 		if (post.getTarget() == TelegramTargetType.PUBLIC_CHANNEL) {
-            targetChatId = channelId;
-        } else if (post.getTarget() == TelegramTargetType.PUBLIC_GROUP) {
-            targetChatId = groupId;
+            targetChatId = publicChannelId;
+        } else if (post.getTarget() == TelegramTargetType.PREMIUM_CHANNEL) {
+            targetChatId = premiumChannelId;
         } else {
             log.warn("Target type {} not supported yet", post.getTarget());
             return;

@@ -10,6 +10,8 @@ import com.sakda.chineselearning.dto.AdminStudentProgressDTO;
 import com.sakda.chineselearning.dto.AdminUserDTO;
 import com.sakda.chineselearning.dto.ApiResponse;
 import com.sakda.chineselearning.service.AdminUserService;
+import com.sakda.chineselearning.telegram.enums.SubscriptionPlan;
+import com.sakda.chineselearning.telegram.service.SubscriptionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
+    private final SubscriptionService subscriptionService;
 
     @Operation(summary = "Get users")
     @GetMapping
@@ -89,4 +92,22 @@ public class AdminUserController {
     			adminUserService.getStudentProgress(userId)
     			));
     }
+    
+    @Operation(summary = "Manually grant premium to a user (Wing Pay / Cash")
+    @PostMapping("/{email}/grant-premium")
+    public ResponseEntity<ApiResponse<String>> grantPremiumManually(
+    		@PathVariable String email,
+    		@RequestParam SubscriptionPlan plan
+    ) {
+    	subscriptionService.grantPremiumAccess(email, plan);
+    	
+    	return ResponseEntity.ok(
+                new ApiResponse<>(
+                        true,
+                        "Successfully upgraded user to " + plan.name() + " and sent Telegram welcome message!",
+                        null
+                )
+        );
+    }
+    
 }

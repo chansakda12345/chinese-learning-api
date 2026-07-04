@@ -1,10 +1,34 @@
 package com.sakda.chineselearning.telegram.message;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PremiumMessageBuilder {
+	
+	@Value("${telegram.admin-contact}")
+	private String adminContact;
+	
+	@Value("${telegram.public-channel-link}")
+	private String publicChannelLink;
+	
+	@Value("${telegram.premium-channel-link}")
+	private String premiumChannelLink;
 
+	public String buildPremiumWelcomeMessage(String studentName, int daysAdded) {
+		return """
+				🎉 សូមអបអរសាទរ %s! (Congratulations!)
+				
+				ការបង់ប្រាក់របស់អ្នកទទួលបានជោគជ័យ! ឥឡូវនេះអ្នកគឺជាសិស្សប្រីមីញ៉ូមរយៈពេល %d ថ្ងៃ។
+				
+				ប្រសិនបើអ្នកត្រូវការជំនួយ សូមទាក់ទងមកកាន់ Admin ផ្ទាល់តាមរយៈ៖ %s
+				
+				👉 ចុចទីនេះដើម្បីចូលរួមក្រុមសិក្សា៖
+				1. ប៉ុស្តិ៍សាធារណៈ (Public Channel): %s
+				2. ប៉ុស្តិ៍ប្រីមីញ៉ូម (Premium Channel): %s
+				""".formatted(studentName, daysAdded, adminContact, publicChannelLink, premiumChannelLink);
+	}
+	
 	public String buildAccountNotLinkedMessage() {
 		
 		return """
