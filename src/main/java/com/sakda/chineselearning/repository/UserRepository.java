@@ -1,6 +1,7 @@
 package com.sakda.chineselearning.repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -29,5 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Modifying
 	@Query("UPDATE User u SET u.isPremium = false WHERE u.isPremium = true AND u.premiumExpiresAt < :now")
 	int downgradeExpiredUser(@Param("now") LocalDateTime now);
+	
+	@Query("SELECT u FROM User u WHERE u.isPremium = true AND u.premiumExpiresAt >= :startDate AND u.premiumExpiresAt < :endDate")
+	List<User> findUsersExpiringBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 	
 }

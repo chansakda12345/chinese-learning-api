@@ -45,5 +45,17 @@ public class PremiumMessageBuilder {
                 សូមចុះឈ្មោះជាសមាជិកប្រចាំខែនៅលើគេហទំព័ររបស់យើង ដើម្បីទទួលបានការបង្រៀនផ្ទាល់ខ្លួន ការធ្វើតេស្ត និងការរំលឹកឡើងវិញ!
                 """;
     }
+	
+	public String buildPremiumExpiringSoonMessage(String studentName) {
+		return """
+				⚠️ សេចក្តីជូនដំណឹង! (Reminder!)
+				
+				សួស្តី %s, គណនីប្រីមីញ៉ូមរបស់អ្នកនឹងផុតកំណត់ក្នុងរយៈពេល ៣ ថ្ងៃទៀត!
+				(Hello %s, your Premium Subscription will expire in 3 days!)
+				
+				ដើម្បីបន្តការសិក្សាដោយមិនមានការរំខាន សូមទាក់ទងមកកាន់ Admin របស់យើង៖ %s
+				(To continue learning without interruption, please contact our Admin to renew: %s)
+				""".formatted(studentName, studentName, adminContact, adminContact);
+	}
 
 }
