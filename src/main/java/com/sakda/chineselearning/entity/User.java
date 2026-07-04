@@ -45,5 +45,10 @@ public class User {
 	
 	@Column(nullable = false)
 	private Boolean telegramVerified = false;
+	
+	@Column(nullable = false)
+	private Boolean isPremium = false;
+	
+	private LocalDateTime premiumExpiresAt;
 
 }
